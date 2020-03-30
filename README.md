@@ -18,3 +18,17 @@ We will continue to develop new ideas and applications to be able to move forwar
 The Transpay team sends you greetings, and wishes you the best in this ongoing health situation. 
 
 Together we are stronger.
+
+# INSTRUCTIONS
+
+In order to run this project you need the following: (npm init)
+
+1) run node server 3000
+2) Open browser: localhost:3000/
+3) Login/register
+4) (This project uses mysql: tested phpmyadmin)
+5) You need accounts: Stripe and (for testing purposes) we used MailTrap (is better if you use it in order to avoid being emailed in your personal account)
+6) Work in progress in the inbox section (cancel and download)
+7) We have a Reader for the QRCodes (reader.html), you can test it with the example image in test or with the QrCodes generated.
+
+
