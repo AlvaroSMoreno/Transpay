@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style type="text/css">
+    /* FontAwesome for working BootSnippet :> */
+
+    @import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+    #team {
+        background: #eee !important;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background-color: #108d6f;
+        border-color: #108d6f;
+        box-shadow: none;
+        outline: none;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #007b5e;
+        border-color: #007b5e;
+    }
+
+    section {
+        padding: 60px 0;
+    }
+
+    section .section-title {
+        text-align: center;
+        color: #007b5e;
+        margin-bottom: 50px;
+        text-transform: uppercase;
+    }
+
+    #team .card {
+        border: none;
+        background: #ffffff;
+    }
+
+    .image-flip:hover .backside,
+    .image-flip.hover .backside {
+        -webkit-transform: rotateY(0deg);
+        -moz-transform: rotateY(0deg);
+        -o-transform: rotateY(0deg);
+        -ms-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+        border-radius: .25rem;
+    }
+
+    .image-flip:hover .frontside,
+    .image-flip.hover .frontside {
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+        -o-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
+
+    .mainflip {
+        -webkit-transition: 1s;
+        -webkit-transform-style: preserve-3d;
+        -ms-transition: 1s;
+        -moz-transition: 1s;
+        -moz-transform: perspective(1000px);
+        -moz-transform-style: preserve-3d;
+        -ms-transform-style: preserve-3d;
+        transition: 1s;
+        transform-style: preserve-3d;
+        position: relative;
+    }
+
+    .frontside {
+        position: relative;
+        -webkit-transform: rotateY(0deg);
+        -ms-transform: rotateY(0deg);
+        z-index: 2;
+        margin-bottom: 30px;
+    }
+
+    .backside {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: white;
+        -webkit-transform: rotateY(-180deg);
+        -moz-transform: rotateY(-180deg);
+        -o-transform: rotateY(-180deg);
+        -ms-transform: rotateY(-180deg);
+        transform: rotateY(-180deg);
+        -webkit-box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+        -moz-box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+        box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+    }
+
+    .frontside,
+    .backside {
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -ms-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-transition: 1s;
+        -webkit-transform-style: preserve-3d;
+        -moz-transition: 1s;
+        -moz-transform-style: preserve-3d;
+        -o-transition: 1s;
+        -o-transform-style: preserve-3d;
+        -ms-transition: 1s;
+        -ms-transform-style: preserve-3d;
+        transition: 1s;
+        transform-style: preserve-3d;
+    }
+
+    .frontside .card,
+    .backside .card {
+        min-height: 312px;
+    }
+
+    .backside .card a {
+        font-size: 18px;
+        color: #007b5e !important;
+    }
+
+    .frontside .card .card-title,
+    .backside .card .card-title {
+        color: #007b5e !important;
+    }
+
+    .frontside .card .card-body img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+      	<center><h1>Options</h1></center>
+          <div class="card w-100">
+            <div class="card-body">
+              <h5 class="card-title">Bank Transaction </h5>
+              <p class="card-text">Cash withdrawals, bank transfers, check your balance, payments, inquiries, and other operations..</p>
+              <center><div id="select_banco" class="btn btn-primary">SELECT</div></center>
+            </div>
+          </div>
+          <div class="card w-100">
+            <div class="card-body">
+              <h5 class="card-title">Grocery List</h5>
+              <p class="card-text">Online Stores, Online E-CART for Groceries, Checkouts, QRCodes and more...</p>
+              <center><div id="select_mercado" class="btn btn-primary">SELECT</div></center>
+            </div>
+          </div>
+          <div class="card w-100">
+            <div class="card-body">
+              <h5 class="card-title">Invoice</h5>
+              <p class="card-text">All your data available in QRCODE Format, for quick procedures, security and convenience...</p>
+               <center><div id="select_factura" class="btn btn-primary">SELECT</div></center> 
+            </div>
+          </div>
+          <div class="card w-100">
+            <div class="card-body">
+              <h5 class="card-title">Gas</h5>
+              <p class="card-text">Huge lines are not longer a problem when Filling up the tank with gas, and other fuel related services...</p>
+                <center><div id="select_gasolina" class="btn btn-primary">SELECT</div></center> 
+            </div>
+          </div>
+          <div class="card w-100">
+            <div class="card-body">
+              <h5 class="card-title">Inbox</h5>
+              <p class="card-text">View all your data, all your QR-CODES Generated and their status in Real Time...</p>
+               <center><div id="select_inbox" class="btn btn-primary">SELECT</div></center> 
+            </div>
+          </div>
+      </div>
+      <div class="col-sm-8" id="bank_div" style="display: inline-block;">
+      	<center><h1>PAYMENTS</h1></center><br><br>
+        <form>
+         	<div class="form-group">
+            <label for="exampleFormControlSelect1">Transaction Type</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>Payments</option>
+              <option>Bank transfers</option>
+              <option>Balance Check</option>
+              <option>Withdraw Cash</option>
+              <option>Inquiries</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Amount</label>
+            <input type="email" class="form-control" id="amount_input" placeholder="$999999">
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Email address</label>
+            <input type="email" class="form-control" id="email_input" placeholder="name@example.com">
+          </div>
+          <center><div id="checkout_banco" class="btn btn-primary">CheckOut</div></center>
+        </form>
+      </div>
+
+      <div class="col-sm-8" id="grocery_div" style="display: none;">
+        <center><h1>GROCERY LIST</h1></center><br><br>
+        <form>
+          <div class="form-group">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Email address</label>
+              <input type="email" class="form-control" id="email_market" placeholder="name@example.com">
+            </div>
+              <label for="exampleFormControlSelect1">Select Your Store</label>
+              <select class="form-control" id="store_select">
+                <option>Walmart</option>
+                <option>7Eleven</option>
+                <option>Costco</option>
+              </select>
+            </div>
+            <a href="#" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#largeModal" id="e_menu">E-MENU</a>
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Amount</label>
+              <input class="form-control" id="amount_market" placeholder="$350">
+            </div>
+            <center><div id="checkout_market" class="btn btn-primary">CheckOut</div></center>
+        </form>
+      </div>
+
+      <div class="col-sm-8" id="invoice_div" style="display: none;">
+        <center><h1>INVOICE DATA</h1></center><br><br>
+        <form>
+          <div class="form-group">
+            <label for="exampleFormControlInput1">RFC</label>
+            <input class="form-control" id="rfc_invoice" placeholder="RUAAFAAFAF">
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Business Name</label>
+            <input class="form-control" id="business_name_invoice" placeholder="XXXXXCODERS">
+          </div>
+            <div class="form-group">
+            <label for="exampleFormControlInput1">Address</label>
+            <input class="form-control" id="address_invoice" placeholder="Address">
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlInput1">CP</label>
+            <input class="form-control" id="cp_invoice" placeholder="21290">
+          </div>
+           <div class="form-group">
+            <label for="exampleFormControlInput1">Email</label>
+            <input class="form-control" id="email_invoice" placeholder="alal@gmail.com">
+          </div>
+          <center><div id="generate_invoice" class="btn btn-primary">Generate QRCODE!</div></center>
+          <br><hr><br>
+          <center><img id="qr_invoice_holder" src="" width="300"></center>
+        </form>
+      </div>
+
+      <div class="col-sm-8" id="gas_div" style="display: none;">
+        <center><h1>GASOLINE</h1></center><br><br>
+        <form>
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Amount</label>
+              <input class="form-control" id="amount_gas" placeholder="$50">
+            </div>
+            <fieldset class="form-group">
+              <div class="row">
+              <legend class="col-form-label col-sm-2 pt-0">Fuel Type:</legend>
+                   <div class="col-sm-10">
+                       <div class="form-check">
+                          <input class="form-check-input" type="radio" name="fuels" value="regular" value="option1">
+                          <label class="form-check-label" for="gridRadios1">
+                             Regular
+                          </label>
+                       </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="fuels" value="premium" value="option2">
+                        <label class="form-check-label" for="gridRadios2">
+                          Premium
+                        </label>
+                      </div>
+                </div>
+            </div>
+          </fieldset>
+
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Email address</label>
+            <input type="email" class="form-control" id="email_gas" placeholder="name@example.com">
+          </div>
+
+           <center><div id="checkout_gas" class="btn btn-primary">CheckOut</div></center>
+        </form>
+      </div>
+
+      <div class="col-sm-8" id="inbox_div" style="display: none;">
+        <center><h1>INBOX</h1></center><br><br>
+        <form>
+          <center><h1>Choose your QR</h1></center>
+
+            <div class="card-deck" id="container_of_cards">
+              <!--<div class="row" id="container_of_cards">
+              </div>-->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="largeModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title titulo_modal_store" id="myModalLabel">7ELEVEN: E-SHOP</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h3>ITEMS:</h3>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="image-flip" ontouchstart="this.classList.toggle('hover');">
+                <div class="mainflip">
+                  <div class="frontside">
+                    <div class="card">
+                      <div class="card-body text-center">
+                        <p><img width="100" class=" img-fluid" src="https://pluspng.com/img-png/egg-png-egg-png-image-png-image-2800.png" alt="card image"></p>
+                        <h4 class="card-title">EGGS</h4>
+                        <p class="card-text">You can prepare this food with cold meats, vegetables and many more ingredients to make a balanced breakfast.</p>
+                        <p class="card-text" id="eggs_price">$25</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="backside">
+                    <div class="card">
+                      <div class="card-body text-center mt-4">
+                        <h4 class="card-title">EGGS</h4>
+                          <p class="card-text">PROTEIN: 10g</p>
+                          <p class="card-text">FAT: 4g</p>
+                          <p class="card-text">CARBS: 0.2g</p>
+                          <a href="#" class="btn btn-info btn-sm" id="eggs_add"><i class="fa fa-plus"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="image-flip" ontouchstart="this.classList.toggle('hover');">
+                <div class="mainflip">
+                  <div class="frontside">
+                    <div class="card">
+                      <div class="card-body text-center">
+                        <p><img width="100" class=" img-fluid" src="https://i7.pngguru.com/preview/497/643/804/photo-on-a-milk-carton-photo-on-a-milk-carton-royalty-free-vector-food-milk.jpg" alt="card image"></p>
+                        <h4 class="card-title">MILK</h4>
+                        <p class="card-text">This food contributes greatly to the growth of minors, as well as playing a critical role in bone recovery.</p>
+                        <p class="card-text" id="milk_price">$75</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="backside">
+                    <div class="card">
+                      <div class="card-body text-center mt-4">
+                        <h4 class="card-title">MILK</h4>
+                          <p class="card-text">PROTEIN: 8g</p>
+                          <p class="card-text">FAT: 5g</p>
+                          <p class="card-text">CARBS: 4g</p>
+                          <a href="#" class="btn btn-info btn-sm" id="milk_add"><i class="fa fa-plus"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="image-flip" ontouchstart="this.classList.toggle('hover');">
+                <div class="mainflip">
+                  <div class="frontside">
+                    <div class="card">
+                      <div class="card-body text-center">
+                        <p><img width="100" class=" img-fluid" src="https://w0.pngwave.com/png/199/70/t-bone-steak-strip-steak-beef-tenderloin-meat-png-clip-art.png" alt="card image"></p>
+                        <h4 class="card-title">BEEF</h4>
+                        <p class="card-text">This food provides the main source of protein for a typical food. It is recommended not to exceed 250g of this food per portion of an average adult.</p>
+                        <p class="card-text" id="beef_price">$125</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="backside">
+                    <div class="card">
+                      <div class="card-body text-center mt-4">
+                        <h4 class="card-title">BEEF</h4>
+                          <p class="card-text">PROTEIN: 16g</p>
+                          <p class="card-text">FAT: 8g</p>
+                          <p class="card-text">CARBS: 1g</p>
+                          <a href="#" class="btn btn-info btn-sm" id="beef_add"><i class="fa fa-plus"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="image-flip" ontouchstart="this.classList.toggle('hover');">
+                <div class="mainflip">
+                  <div class="frontside">
+                    <div class="card">
+                      <div class="card-body text-center">
+                        <p><img width="100" class=" img-fluid" src="https://toppng.com/uploads/preview/free-png-rice-png-png-images-transparent-white-rice-11563271025zadr2nmizy.png" alt="card image"></p>
+                        <h4 class="card-title">RICE</h4>
+                        <p class="card-text">This essential grain provides many nutrients to the human body, mainly, functioning as a food high in energy content to be able to withstand day to day.</p>
+                        <p class="card-text" id="rice_price">$20</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="backside">
+                    <div class="card">
+                      <div class="card-body text-center mt-4">
+                        <h4 class="card-title">RICE</h4>
+                          <p class="card-text">PROTEIN: 4.8g</p>
+                          <p class="card-text">FAT: 3g</p>
+                          <p class="card-text">CARBS: 16g</p>
+                          <a href="#" class="btn btn-info btn-sm" id="rice_add"><i class="fa fa-plus"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="close_modal">Close</button>
+          <button type="button" class="btn btn-primary" id="save_to_cart">Save to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var total_cart = 0;
+      function getUrlParameter(name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          var results = regex.exec(location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      }
+      var pk = getUrlParameter('pk');
+      var user = getUrlParameter('user');
+
+      console.log("PK: " + pk);
+      console.log("USER: " + user);
+
+      //INTERACTIONS TABS
+      $("#select_banco").click(function() {
+        $("#bank_div").show();
+        $("#grocery_div").hide();
+        $("#invoice_div").hide();
+        $("#gas_div").hide();
+        $("#inbox_div").hide();
+      });
+      $("#select_mercado").click(function() {
+        $("#bank_div").hide();
+        $("#grocery_div").show();
+        $("#invoice_div").hide();
+        $("#gas_div").hide();
+        $("#inbox_div").hide();
+      });
+      $("#select_gasolina").click(function() {
+        $("#bank_div").hide();
+        $("#grocery_div").hide();
+        $("#invoice_div").hide();
+        $("#gas_div").show();
+        $("#inbox_div").hide();
+      });
+      $("#select_factura").click(function() {
+        $("#bank_div").hide();
+        $("#grocery_div").hide();
+        $("#invoice_div").show();
+        $("#gas_div").hide();
+        $("#inbox_div").hide();
+      });
+      $("#select_inbox").click(function() {
+        $("#bank_div").hide();
+        $("#grocery_div").hide();
+        $("#invoice_div").hide();
+        $("#gas_div").hide();
+        $("#inbox_div").show();
+      });
+
+      //MODAL ADDS TO SUM
+      $("#rice_add").click(function() {
+        var rice = Number($("#rice_price").text().replace('$',''));
+        total_cart += rice;
+      });
+
+      $("#milk_add").click(function() {
+        var milk = Number($("#milk_price").text().replace('$',''));
+        total_cart += milk;
+      });
+
+      $("#beef_add").click(function() {
+        var beef = Number($("#beef_price").text().replace('$',''));
+        total_cart += beef;
+      });
+
+      $("#eggs_add").click(function() {
+        var eggs = Number($("#eggs_price").text().replace('$',''));
+        total_cart += eggs;
+      });
+
+      $("#e_menu").click(function() {
+        var store = $("#store_select").val();
+        console.log(store);
+        $(".titulo_modal_store").text(store.toString().toUpperCase()+": E-STORE");
+      });
+
+      $("#save_to_cart").click(function() {
+        $("#amount_market").val(total_cart);
+        $("#close_modal").click();
+      });
+
+      //BUTTONS AND SUBMITS
+      $("#checkout_banco").click(function() {
+        var amount = $("#amount_input").val();
+        var email = $("#email_input").val();
+        $.post("/getSession", {amount:Number(amount)*100, email:email, user:user, pk:pk}, function(data) {
+          var sessionID = data;
+          var stripe = Stripe(pk);
+          stripe.redirectToCheckout({
+            sessionId: sessionID
+          }).then(function (result) {
+
+          });
+        });
+      });
+
+      $("#checkout_gas").click(function() {
+        var amount = Number($("#amount_gas").val())*100;
+        var fuel = $("input[name='fuels']:checked").val();
+        var email = $("#email_gas").val();
+        //console.log(fuel);
+        $.post("/getSession", {amount:amount, email:email, user:user, pk:pk, fuel:fuel}, function(data) {
+          var sessionID = data;
+          var stripe = Stripe(pk);
+          stripe.redirectToCheckout({
+            sessionId: sessionID
+          }).then(function (result) {
+
+          });
+        });
+      });
+
+      $("#generate_invoice").click(function() {
+        var rfc = $("#rfc_invoice").val();
+        var business_name = $("#business_name_invoice").val();
+        var email = $("#email_invoice").val();
+        var cp = $("#cp_invoice").val();
+        var address = $("#address_invoice").val();
+        $.post("/getQR",{rfc:rfc,business_name:business_name,email:email,cp:cp,address:address},function(data) {
+          $("#qr_invoice_holder").attr('src', data);
+        });
+      });
+
+      $("#checkout_market").click(function() {
+        var amount = Number($("#amount_market").val())*100;
+        var store = $("#store_select").val();
+        var email = $("#email_market").val();
+        //console.log(fuel);
+        $.post("/getSession", {amount:amount, email:email, user:user, pk:pk, store:store}, function(data) {
+          var sessionID = data;
+          var stripe = Stripe(pk);
+          stripe.redirectToCheckout({
+            sessionId: sessionID
+          }).then(function (result) {
+
+          });
+        });
+      });
+
+      $("#select_inbox").click(function() {
+        $.post("/returnQR", {user:user}, function(data) {
+          //console.log(data[0].url);
+          var container = $("#container_of_cards");
+          for(var i in data) {
+            var url = data[i].url;
+            var id = data[i].id;
+            var card = '<div class="card col-md-6"><img width="50" src="'+url+'" class="card-img-top" alt="..."><div class="card-body"><center><h5 class="card-title"> Choose an option</h5></center><div class="card-text"><center><div class="btn-group-vertical"><div id="download_'+id+'" class="btn btn-success">Download</div><div id="checkout_inbox_'+id+'" class="btn btn-primary">CheckOut</div><div id="cancel_'+id+'" class="btn btn-danger">Cancel</div></div></center></div></div></div>';
+            container.append(card);
+          }
+        });
+      });
+
+    });
+  </script>
+
+</body>
+</html>
